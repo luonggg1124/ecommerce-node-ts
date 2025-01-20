@@ -8,15 +8,15 @@ const imageSchema = new mongoose.Schema({
     cloud: {
         type: String,
         enum: ["CLOUDINARY","OTHERS"],
-        required: false
+        default: "OTHERS"
     },
     folder: {
         type: String,
-        required: false
+        
     },
     alt_text:{
         type: String,
-        required: false
+        
     }
 },{
     timestamps: true
