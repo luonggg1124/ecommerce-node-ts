@@ -1,6 +1,18 @@
-import mongoose from "mongoose";
+import mongoose,{Document,Schema,model} from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
-const productSchema = new mongoose.Schema(
+interface IProduct extends Document{
+  name: string;
+  description: string;
+  short_description: string;
+  price: number;
+  image: string;
+  images?: string[];
+  hasVariants: boolean;
+  variants?: mongoose.Types.ObjectId[];
+}
+
+const productSchema = new Schema<IProduct>(
   {
     name: {
       type: String,
@@ -18,9 +30,14 @@ const productSchema = new mongoose.Schema(
       min: 0,
       required: true,
     },
+    image: {
+      type: String,
+      ref: "Image",
+      required:true
+    },
     images: [
       {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: "Image",
       },
     ],
@@ -39,6 +56,6 @@ const productSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-const Product = mongoose.model("Product", productSchema);
+productSchema.plugin(mongoosePaginate);
+const Product = model<IProduct,mongoose.PaginateModel<IProduct>>("Product", productSchema);
 export default Product;

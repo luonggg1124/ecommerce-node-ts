@@ -1,33 +1,6 @@
 import mongoose from "mongoose";
 
-const itemSchema = new mongoose.Schema({
-  product: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Product",
-    required: true,
-  },
-  price: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  total_amount: {
-    type: Number,
-    min: 0,
-    required: true,
-  },
-  options: [
-    {
-      type: String,
-      required: true,
-    },
-  ],
-});
+
 
 const orderSchema = new mongoose.Schema({
   user: {
@@ -116,9 +89,17 @@ const orderSchema = new mongoose.Schema({
     ref: "Voucher",
     default: null,
   },
-  order_items: [itemSchema],
+  order_items: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "OrderItem",
+    required: true,
+  }],
   note: {
     type: String,
     default: "",
   },
 });
+
+const Order = mongoose.model("Order", orderSchema);
+
+export default Order;

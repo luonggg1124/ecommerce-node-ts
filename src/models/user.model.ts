@@ -1,27 +1,7 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
-const profileSchema = new mongoose.Schema(
-  {
-    given_name: {
-      type: String,
-    },
-    family_name: {
-      type: String,
-    },
-    city: {
-      type: String,
-    },
-    district: {
-      type: String,
-    },
-    commune: {
-      type: String,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+
 
 const userSchema = new mongoose.Schema(
   {
@@ -50,8 +30,8 @@ const userSchema = new mongoose.Schema(
       min: 8,
     },
     avatar: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Image",
+      type: String,
+      
     },
     phone: {
       type: String,
@@ -65,13 +45,26 @@ const userSchema = new mongoose.Schema(
         ref: "Product",
       },
     ],
-    profile: profileSchema,
+   
   },
   {
     timestamps: true,
   }
 );
 
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  try {
+    const salt = await bcrypt.genSalt(15);
+    this.password = await bcrypt.hash(this.password,salt).toString();
+    next();
+  } catch (error: any) {
+    next(error);
+  }
+});
+userSchema.methods.checkPassword = async function (password:string){
+  return bcrypt.compare(password,this.password as string);
+}
 const User = mongoose.model("User", userSchema);
 
 export default User;
