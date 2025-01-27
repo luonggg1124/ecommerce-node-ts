@@ -1,22 +1,24 @@
-import express from "express";
+import express,{Application} from "express";
+import cookieParser from 'cookie-parser';
 import dotenv from "dotenv";
 import { connectDB } from "./lib/db";
-import routesV1 from "./routes/v1";
+import productRoutes from "./routes/v1/product.route";
+
 
 dotenv.config();
-const app = express();
+const app:Application = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json({ limit: "10mb" }));
+app.use(cookieParser());
 
-app.use('/',function(req, res) {
-  res.json({
-    message: "Server is running",
-  });
-  
-})
-app.use('api/v1',routesV1);
+
+app.use('/api/product',productRoutes)
+app.use((req:any, res:any) => { 
+  res.status(404).json({ message: 'Not Found' });
+});
+
 app.listen(PORT, () => {
-  connectDB;
+  connectDB();
   console.log(`Server is running at ${PORT}`);
 });

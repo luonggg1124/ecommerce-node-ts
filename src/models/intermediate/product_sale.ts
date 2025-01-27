@@ -10,6 +10,10 @@ const productSaleSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Sale",
         required: true
+    },
+    quantity: {
+        type: Number,
+        min: 0,
     }
 });
 const ProductSale = mongoose.model("ProductSale",productSaleSchema);

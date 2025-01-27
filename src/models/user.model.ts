@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema(
       min: 8,
     },
     avatar: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Image",
+      type: String,
+      
     },
     phone: {
       type: String,
