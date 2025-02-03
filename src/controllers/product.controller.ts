@@ -5,11 +5,8 @@ import ProductVariant from "../models/product_variant.model";
 import ProductCategory from "../models/intermediate/product_category";
 
 export const getAll = async (req: Request, res: Response) => {
-  
-
   try {
     const { paginate, page, sortBy, order, limit } = req?.query;
-
     if (paginate) {
       const params = getParams(page, limit, sortBy, order, [
         "name",
