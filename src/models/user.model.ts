@@ -1,9 +1,21 @@
-import mongoose from "mongoose";
+import mongoose,{Document,Schema,model}  from "mongoose";
 import bcrypt from "bcryptjs";
+import mongoosePaginate from "mongoose-paginate-v2";
 
+interface IUser extends Document{
+  _id:string;
+  name: string;
+  role: "ADMIN" | "USER";
+  email: string;
+  status: "ACTIVE" | "INACTIVE";
+  password: string;
+  avatar: string;
+  phone:string;
+  wishlist: mongoose.Types.ObjectId[];
+  checkPassword(password:string): Promise<boolean>;
+}
 
-
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema<IUser>(
   {
     name: {
       type: String,
@@ -51,7 +63,7 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
+userSchema.plugin(mongoosePaginate);
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   try {
@@ -65,6 +77,6 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.checkPassword = async function (password:string){
   return bcrypt.compare(password,this.password as string);
 }
-const User = mongoose.model("User", userSchema);
+const User = model<IUser,mongoose.PaginateModel<IUser>>("User", userSchema);
 
 export default User;

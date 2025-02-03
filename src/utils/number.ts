@@ -6,3 +6,7 @@ export const isNumber = (value: any): boolean => {
     isFinite(value)
   );
 };
+
+export const randomNumberString = (length:number):string => {
+  return Math.random().toString().slice(2,2 + length);
+}
